@@ -1,6 +1,7 @@
 package dev.saransh.journalApp.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import java.util.Date;
 //@Getter
 //@Setter
 @Data
+@NoArgsConstructor
 //convenient shortcut annotation that bundles the features of @ToString, @EqualsAndHashCode, @Getter / @Setter and @RequiredArgsConstructor
 public class JournalEntry {
     @Id
