@@ -1,10 +1,13 @@
 package dev.saransh.journalApp.controller;
 
 import dev.saransh.journalApp.entity.User;
+import dev.saransh.journalApp.repository.UserRepo;
 import dev.saransh.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,25 +18,37 @@ public class UserController {
     @Autowired
     UserService service;
 
+    @Autowired
+    private UserRepo userRepo;
+
     @GetMapping
     public List<User> getAll() {
         return service.getAll();
     }
 
-    @PostMapping
-    public void createUser(@RequestBody User user) {
-        service.saveUser(user);
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        try {
+            User userInDb = service.findByUserName(username);
+            if (userInDb != null) {
+                userInDb.setUserName(user.getUserName());
+                userInDb.setPassword(user.getPassword());
+                service.saveUser(userInDb);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String username) {
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@RequestBody User user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         try {
-            User res = service.findByUserName(username);
-            if (res != null) {
-                res.setUserName(user.getUserName());
-                res.setPassword(user.getPassword());
-                service.saveUser(res);
-            }
+            userRepo.deleteByUsername(username);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

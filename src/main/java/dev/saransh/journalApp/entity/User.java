@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,4 +24,5 @@ public class User {
     private String password;
     @DBRef
     private List<JournalEntry> journalEntries = new ArrayList<>(); // It will be initialised as empty list, not null
+    private List<String> roles;
 }
