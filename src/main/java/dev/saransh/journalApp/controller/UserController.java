@@ -35,7 +35,7 @@ public class UserController {
             if (userInDb != null) {
                 userInDb.setUserName(user.getUserName());
                 userInDb.setPassword(user.getPassword());
-                service.saveUser(userInDb);
+                service.saveNewUser(userInDb);
             }
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
@@ -44,11 +44,11 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteUser(@RequestBody User user) {
+    public ResponseEntity<?> deleteUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         try {
-            userRepo.deleteByUsername(username);
+            userRepo.deleteByUserName(username);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

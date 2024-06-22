@@ -20,6 +20,7 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
+
     @Transactional // Executes this method as a transaction
     public void saveEntry(JournalEntry journalEntry, String username) {
         User user = userService.findByUserName(username);
@@ -41,10 +42,15 @@ public class JournalEntryService {
         return journalEntryRepo.findById(id);
     }
 
-    public void deleteById(ObjectId id, String username) {
+    @Transactional
+    public boolean deleteById(ObjectId id, String username) {
+        boolean removed = false;
         User user = userService.findByUserName(username);
-        user.getJournalEntries().removeIf(x -> x.getId().equals(id)); //Deleting journal ref ID from user
-        userService.saveUser(user);
-        journalEntryRepo.deleteById(id);
+        removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id)); //Deleting journal ref ID from user
+        if (removed) {
+            userService.saveUser(user);
+            journalEntryRepo.deleteById(id);
+        }
+        return removed;
     }
 }
