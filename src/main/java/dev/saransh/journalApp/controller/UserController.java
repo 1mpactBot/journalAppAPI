@@ -1,8 +1,11 @@
 package dev.saransh.journalApp.controller;
 
+import dev.saransh.journalApp.api.response.WeatherResponse;
 import dev.saransh.journalApp.entity.User;
 import dev.saransh.journalApp.repository.UserRepo;
+import dev.saransh.journalApp.service.QuotesService;
 import dev.saransh.journalApp.service.UserService;
+import dev.saransh.journalApp.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +22,13 @@ public class UserController {
     UserService service;
 
     @Autowired
-    private UserRepo userRepo;
+    WeatherService weatherService;
 
-    @GetMapping
-    public List<User> getAll() {
-        return service.getAll();
-    }
+    @Autowired
+    QuotesService quotesService;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
@@ -53,5 +57,18 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> greeting() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        WeatherResponse weatherResponse = weatherService.getWeather("Kota,Rajasthan");
+        String username = authentication.getName();
+        String greeting = "";
+        if (weatherResponse != null) {
+            greeting = "\nWeather feels like " + weatherResponse.getCurrent().getFeelslike();
+        }
+        String quote = quotesService.getQuote();
+        return new ResponseEntity<>("Hi " + username + greeting + "\nHere's a randon Kanye quote for you '" + quote + "'.", HttpStatus.OK);
     }
 }
