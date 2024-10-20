@@ -1,0 +1,12 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: email@gmail.com
+    password: xxxxxxxxxxxx
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls: #Start Transport Layer Security (Encryption while transportation)
+            enable: true
