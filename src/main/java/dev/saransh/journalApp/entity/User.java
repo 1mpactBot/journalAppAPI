@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "users") //Mapping the class to NoSQl DB, @Entity is part of JPA
-@Builder // The generated builder class encourages the use of immutable objects.
+//@Builder // The generated builder class encourages the use of immutable objects.
 @Data
 //convenient shortcut annotation that bundles the features of @ToString, @EqualsAndHashCode, @Getter / @Setter and @RequiredArgsConstructor
 public class User {
